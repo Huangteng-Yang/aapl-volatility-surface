@@ -20,22 +20,22 @@ This project is part of my preparation for **quantitative research (QR)**. My ac
 - **Original option contracts:** 2,152
 - **Contracts after basic cleaning:** 1,945
 - **OTM contracts before spread filtering:** 984
-- **Stock reference price:** \(S_0=\$342.37\), consistent with Yahoo Finance's regular-market price and the 2026-11-06 15:59 one-minute close (approximately \$342.365)
-- **Continuous dividend yield:** \(q=0.00315\), based on an assumed annual dividend of \$1.08
+- **Stock reference price:** $S_0=\$342.37$, consistent with Yahoo Finance's regular-market price and the 2026-11-06 15:59 one-minute close (approximately \$342.365)
+- **Continuous dividend yield:** $q=0.00315$, based on an assumed annual dividend of \$1.08
 - **Risk-free rates:** maturity-dependent estimates derived from the daily U.S. Treasury yield data
 
 The project uses option bid and ask quotes to calculate the midpoint:
 
-\[
+$$
 P_{\mathrm{mid}}=\frac{\mathrm{bid}+\mathrm{ask}}{2}.
-\]
+$$
 
 The relative bid–ask spread is defined as:
 
-\[
+$$
 \mathrm{RelativeSpread}
 =\frac{\mathrm{ask}-\mathrm{bid}}{P_{\mathrm{mid}}}.
-\]
+$$
 
 The main plots use a **20% relative-spread threshold**. This is a practical choice for balancing quote filtering and data coverage, not a universal optimal threshold.
 
@@ -45,36 +45,36 @@ The main plots use a **20% relative-spread threshold**. This is a practical choi
 
 The cleaning module removes invalid or unusable quotes, calculates midpoint prices and relative spreads, attaches maturity-dependent risk-free rates, and constructs approximate forward prices and log-moneyness:
 
-\[
+$$
 F_T=S_0e^{(r-q)T},
 \qquad
 k=\ln\left(\frac{K}{F_T}\right).
-\]
+$$
 
-For the smile analysis, the OTM sample consists of puts with \(k<0\) and calls with \(k\geq 0\).
+For the smile analysis, the OTM sample consists of puts with $k<0$ and calls with $k\geq 0$.
 
 ### 2. Black–Scholes implied volatility
 
 For each eligible option, implied volatility is obtained by solving:
 
-\[
+$$
 V_{\mathrm{BS}}(S_0,K,T,r,q,\sigma_{\mathrm{IV}})
 =P_{\mathrm{mid}}.
-\]
+$$
 
 The implementation uses `scipy.optimize.brentq` and checks price bounds before root finding. Both calls and puts are supported.
 
 ### 3. Volatility smile
 
-For each expiration, plot implied volatility against log-moneyness. OTM puts and OTM calls are shown separately, with \(k=0\) marking the ATM-forward reference.
+For each expiration, plot implied volatility against log-moneyness. OTM puts and OTM calls are shown separately, with $k=0$ marking the ATM-forward reference.
 
 ### 4. ATM-forward term structure
 
-For each expiration, estimate \(\sigma_{\mathrm{IV}}(k=0,T)\) by linear interpolation between nearby observations that bracket \(k=0\). No extrapolation is used when the available observations do not cover the target moneyness.
+For each expiration, estimate $\sigma_{\mathrm{IV}}(k=0,T)$ by linear interpolation between nearby observations that bracket $k=0$. No extrapolation is used when the available observations do not cover the target moneyness.
 
 ### 5. 3D implied-volatility surface
 
-Construct a regular \((k,T)\) grid and interpolate the irregularly spaced IV observations using:
+Construct a regular $(k,T)$ grid and interpolate the irregularly spaced IV observations using:
 
 ```python
 scipy.interpolate.griddata(..., method="linear")
@@ -191,7 +191,7 @@ Python standard-library modules such as `pathlib`, `math`, and `datetime` do not
 ## Assumptions and limitations
 
 1. **American versus European exercise:** Listed AAPL equity options are American-style, while the IV calculation uses the European Black–Scholes formula as an approximation. Early exercise is not modeled.
-2. **Dividend approximation:** The experiment uses a constant continuous dividend yield \(q=0.00315\), based on an assumed annual dividend of \$1.08, rather than explicitly modeling each discrete dividend payment.
+2. **Dividend approximation:** The experiment uses a constant continuous dividend yield $q=0.00315$, based on an assumed annual dividend of \$1.08, rather than explicitly modeling each discrete dividend payment.
 3. **Risk-free rates:** The maturity-dependent inputs are derived from Treasury par yields and are not a bootstrapped zero-coupon spot curve. For the 21- and 28-day maturities, which are shorter than the shortest available Treasury tenor, the current interpolation routine uses the first tenor's rate.
 4. **Quote synchronization:** The selected stock reference price agrees closely with the 2026-11-06 15:59 stock close, but the data source does not provide a reliable per-contract timestamp for every option bid and ask. Exact stock/option quote synchronization cannot be guaranteed.
 5. **Liquidity and filtering:** A successful numerical IV solution does not imply that the quote is liquid or reliable. Relative-spread filtering reduces, but does not eliminate, noisy observations.
@@ -199,7 +199,7 @@ Python standard-library modules such as `pathlib`, `math`, and `datetime` do not
 
 ## Possible extensions
 
-- Compare term structures at fixed log-moneyness values such as \(k=-0.05, 0, 0.05\).
+- Compare term structures at fixed log-moneyness values such as $k=-0.05, 0, 0.05$.
 - Add a 2D heatmap and a plot of observation density.
 - Compare call and put IVs at matched strikes and maturities.
 - Compare surfaces across multiple consistently timestamped trading-day snapshots.
