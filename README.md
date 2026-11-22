@@ -20,7 +20,7 @@ This project is part of my preparation for **quantitative research (QR)**. My ac
 - **Original option contracts:** 2,152
 - **Contracts after basic cleaning:** 1,945
 - **OTM contracts before spread filtering:** 984
-- **Stock reference price:** $S_0=\$342.37$, consistent with Yahoo Finance's regular-market price and the 2026-11-06 15:59 one-minute close (approximately \$342.365)
+- **Stock reference price:** S_0=\$342.37, consistent with Yahoo Finance's regular-market price and the 2026-11-06 15:59 one-minute close (approximately \$342.365)
 - **Continuous dividend yield:** $q=0.00315$, based on an assumed annual dividend of \$1.08
 - **Risk-free rates:** maturity-dependent estimates derived from the daily U.S. Treasury yield data
 
